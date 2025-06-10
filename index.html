@@ -189,5 +189,23 @@
         </div>
     </div>
 </div>
+<!-- 你的原始程式碼省略，以下為新增部分 -->
+
+<script>
+    document.getElementById("button").addEventListener("click", function() {
+        // 這裡可以先做表單驗證，通過後再跳轉
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!email || !password) {
+            alert("Please enter both email and password.");
+            return;
+        }
+
+        // 驗證通過，跳轉頁面
+        window.location.href = "payment.html";
+    });
+</script>
+
 </body>
 </html>

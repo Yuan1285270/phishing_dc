@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>付款資料 - Discord</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #5865f2 0%, #3b4cca 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .payment-container {
+      background: #36393f;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .payment-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #5865f2, #57f287, #fee75c, #ed4245);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: #5865f2;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo::before {
+      content: '💳';
+      font-size: 28px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .title {
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #b9bbbe;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      color: #b9bbbe;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #40444b;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: #ffffff;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #5865f2;
+      background: #42464d;
+      box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
+    }
+
+    .form-input::placeholder {
+      color: #72767d;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .card-preview {
+      background: linear-gradient(135deg, #5865f2, #3b4cca);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      transform: perspective(1000px) rotateX(5deg);
+      transition: transform 0.3s ease;
+    }
+
+    .card-preview:hover {
+      transform: perspective(1000px) rotateX(0deg) scale(1.02);
+    }
+
+    .card-preview::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg);
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0%, 100% { transform: translateX(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    .card-number {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .card-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-holder {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .card-expiry {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .security-info {
+      background: rgba(114, 137, 218, 0.1);
+      border: 1px solid rgba(114, 137, 218, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .security-icon {
+      width: 24px;
+      height: 24px;
+      background: #7289da;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .security-text {
+      color: #b9bbbe;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .payment-button {
+      width: 100%;
+      background: linear-gradient(135deg, #5865f2, #4752c4);
+      border: none;
+      border-radius: 6px;
+      padding: 16px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .payment-button:hover {
+      background: linear-gradient(135deg, #4752c4, #3c44aa);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(88, 101, 242, 0.4);
+    }
+
+    .payment-button:active {
+      transform: translateY(0);
+    }
+
+    .payment-button.processing {
+      background: #43b581;
+      pointer-events: none;
+    }
+
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .footer-links {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #4f545c;
+    }
+
+    .footer-links a {
+      color: #7289da;
+      text-decoration: none;
+      font-size: 14px;
+      margin: 0 12px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: #677bc4;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .payment-container {
+        padding: 24px;
+        margin: 16px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="payment-container">
+  <div class="header">
+    <div class="logo"></div>
+    <h1 class="title">付款資料</h1>
+    <p class="subtitle">安全地新增您的付款方式以升級Discord體驗</p>
+  </div>
+
+  <div class="card-preview">
+    <div class="card-number" id="cardDisplay">•••• •••• •••• ••••</div>
+    <div class="card-info">
+      <div class="card-holder" id="holderDisplay">持卡人姓名</div>
+      <div class="card-expiry" id="expiryDisplay">MM/YY</div>
+    </div>
+  </div>
+
+  <form id="paymentForm">
+    <div class="form-group">
+      <label class="form-label">信用卡號碼</label>
+      <input type="text" class="form-input" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">到期日</label>
+        <input type="text" class="form-input" id="expiry" placeholder="MM/YY" maxlength="5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">安全碼</label>
+        <input type="text" class="form-input" id="cvv" placeholder="123" maxlength="4">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">持卡人姓名</label>
+      <input type="text" class="form-input" id="holderName" placeholder="請輸入持卡人姓名">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">帳單地址</label>
+      <input type="text" class="form-input" id="address" placeholder="請輸入完整地址">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">城市</label>
+        <input type="text" class="form-input" id="city" placeholder="台中市">
+      </div>
+      <div class="form-group">
+        <label class="form-label">郵遞區號</label>
+        <input type="text" class="form-input" id="zip" placeholder="40001">
+      </div>
+    </div>
+
+    <div class="security-info">
+      <div class="security-icon">🔒</div>
+      <div class="security-text">
+        您的付款資訊經過256位元SSL加密保護，我們不會儲存您的信用卡資訊。
+      </div>
+    </div>
+
+    <button type="submit" class="payment-button" id="submitBtn">
+      <span class="spinner" id="spinner"></span>
+      <span id="buttonText">新增付款方式</span>
+    </button>
+  </form>
+
+  <div class="footer-links">
+    <a href="#">隱私政策</a>
+    <a href="#">服務條款</a>
+    <a href="#">聯絡客服</a>
+  </div>
+</div>
+
+<script>
+  // 信用卡號碼格式化
+  document.getElementById('cardNumber').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    if (formattedValue.length <= 19) {
+      e.target.value = formattedValue;
+
+      // 更新卡片預覽
+      let displayValue = formattedValue.padEnd(19, '•').replace(/./g, (char, index) => {
+        if (index < formattedValue.length) return char;
+        return '•';
+      });
+      if (displayValue.length < 19) {
+        displayValue = displayValue + '•'.repeat(19 - displayValue.length);
+      }
+      document.getElementById('cardDisplay').textContent = displayValue.match(/.{1,4}/g).join(' ');
+    }
+  });
+
+  // 到期日格式化
+  document.getElementById('expiry').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/[^0-9]/gi, '');
+    if (value.length >= 2) {
+      value = value.substring(0,2) + '/' + value.substring(2,4);
+    }
+    e.target.value = value;
+
+    // 更新卡片預覽
+    document.getElementById('expiryDisplay').textContent = value || 'MM/YY';
+  });
+
+  // 持卡人姓名更新
+  document.getElementById('holderName').addEventListener('input', function(e) {
+    document.getElementById('holderDisplay').textContent = e.target.value || '持卡人姓名';
+  });
+
+  // CVV只允許數字
+  document.getElementById('cvv').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/[^0-9]/gi, '');
+  });
+
+  // 郵遞區號只允許數字
+  document.getElementById('zip').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/[^0-9]/gi, '');
+  });
+
+  // 表單提交處理
+  document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const buttonText = document.getElementById('buttonText');
+
+    // 簡單驗證
+    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+    const expiry = document.getElementById('expiry').value;
+    const cvv = document.getElementById('cvv').value;
+    const holderName = document.getElementById('holderName').value;
+
+    if (!cardNumber || cardNumber.length < 13) {
+      alert('請輸入有效的信用卡號碼');
+      return;
+    }
+
+    if (!expiry || expiry.length < 5) {
+      alert('請輸入有效的到期日');
+      return;
+    }
+
+    if (!cvv || cvv.length < 3) {
+      alert('請輸入有效的安全碼');
+      return;
+    }
+
+    if (!holderName.trim()) {
+      alert('請輸入持卡人姓名');
+      return;
+    }
+
+    // 顯示處理中狀態
+    submitBtn.classList.add('processing');
+    spinner.style.display = 'inline-block';
+    buttonText.textContent = '處理中...';
+
+    // 模擬API請求
+    setTimeout(() => {
+      alert('付款方式新增成功！🎉');
+
+      // 重置按鈕狀態
+      submitBtn.classList.remove('processing');
+      spinner.style.display = 'none';
+      buttonText.textContent = '新增付款方式';
+
+      // 可以在這裡重置表單或跳轉到其他頁面
+      // document.getElementById('paymentForm').reset();
+    }, 2000);
+  });
+
+  // 添加輸入動畫效果
+  document.querySelectorAll('.form-input').forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.style.transform = 'scale(1.02)';
+      this.parentElement.style.transition = 'transform 0.2s ease';
+    });
+
+    input.addEventListener('blur', function() {
+      this.parentElement.style.transform = 'scale(1)';
+    });
+  });
+
+  // 鍵盤快捷鍵支持
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      document.getElementById('paymentForm').dispatchEvent(new Event('submit'));
+    }
+  });
+</script>
+</body>
+</html>
